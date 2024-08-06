@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Welcome to Our Portal</title>
+</head>
+<body>
+  <% const { username, email, otp, portalUrl } = locals; %>
+  <h1>Welcome to Our Portal, <%= username %>!</h1>
+  <p>We are excited to have you on board. You can access our portal using the following link:</p>
+  <p><a href="<%= portalUrl %>"><%= portalUrl %></a></p>
+  <p>Your username: <strong><%= username %></strong></p>
+  <p>Your temporary password: <strong><%= otp %></strong></p>
+  <p>Please log in and change your password to a strong one containing 8 to 12 characters, at least one number, one alpha character, one uppercase character, one lowercase character, and one special character.</p>
+  <p>Best regards,<br/>The Team</p>
+</body>
+</html>

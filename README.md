@@ -1,29 +1,31 @@
-# README #
+# Notification Microservice
 
-This README would normally document whatever steps are necessary to get your application up and running.
+This microservice is responsible for sending notifications to users using Node.js and NestJS as the development framework and AWS SES for sending emails. It provides functionalities such as sending welcome emails and other user notifications.
 
-### What is this repository for? ###
+## Requirements
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+- Node.js (v20 or higher)
+- NestJS (v10 or higher)
+- AWS SES (or another SMTP server) and email verified from the STMP server
 
-### How do I get set up? ###
+## Installation
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+```sh
+$ npm install
+```
+## Configuration
 
-### Contribution guidelines ###
+### Set up the environment variables
 
-* Writing tests
-* Code review
-* Other guidelines
+Create a .env file in the root of the project with the following content:
 
-### Who do I talk to? ###
+    MAIL_HOST=
+    MAIL_PORT=
+    MAIL_FROM=
+    MAIL_USER=
+    MAIL_PASS=
+    PORTAL_URL=
 
-* Repo owner or admin
-* Other community or team contact
+## Running the Application
+
+    npm run start
