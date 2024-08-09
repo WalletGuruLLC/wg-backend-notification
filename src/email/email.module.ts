@@ -34,7 +34,7 @@ const sqsClient = new SQSClient({
           from: configService.get<string>('MAIL_FROM'),
         },
         template: {
-          dir: join(__dirname, './templates'),
+          dir: join(__dirname, './assets/templates'),
           adapter: new EjsAdapter(),
           options: {
             strict: true,

@@ -7,6 +7,7 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
 import { SqsMessageHandler } from '@ssut/nestjs-sqs';
 import * as SQS from '@aws-sdk/client-sqs';
+import { resolve } from 'path';
 
 import { SendWelcomeEmailDto } from './dto/send-welcome-email.dto';
 
@@ -48,8 +49,8 @@ export class EmailService {
 
   private prepareEmailDetails(sendWelcomeEmailDto: SendWelcomeEmailDto) {
     const { username, email, otp } = sendWelcomeEmailDto;
-    const subject = `Welcome to Company: ${username}`;
-    const templatePath = './welcome';
+    const subject = `Action required: Activate Your Account`;
+    const templatePath = './login';
     const context = { username, email, otp, portalUrl: this.PORTAL_URL };
 
     return { email, subject, templatePath, context };
@@ -67,6 +68,13 @@ export class EmailService {
         subject,
         template: templatePath,
         context,
+        attachments: [
+          {
+            filename: 'logo.png',
+            path: resolve(__dirname, 'assets', 'images', 'logo.png'),
+            cid: 'logo',
+          },
+        ],
       });
       this.logger.log(`Email sent successfully to ${to}`);
     } catch (error) {
