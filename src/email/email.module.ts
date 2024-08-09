@@ -3,9 +3,17 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
 import { join } from 'path';
+import { SqsModule } from '@ssut/nestjs-sqs';
+import { SQSClient } from '@aws-sdk/client-sqs';
+import { fromEnv } from '@aws-sdk/credential-provider-env';
 
 import { EmailService } from './email.service';
 import { EmailController } from './email.controller';
+
+const sqsClient = new SQSClient({
+  region: process.env.AWS_REGION,
+  credentials: fromEnv(),
+});
 
 @Module({
   imports: [
@@ -35,8 +43,27 @@ import { EmailController } from './email.controller';
       }),
       inject: [ConfigService],
     }),
+    SqsModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        consumers: [
+          {
+            name: 'paystreme-notifications',
+            queueUrl: configService.get<string>('SQS_QUEUE_URL'),
+            region: configService.get<string>('AWS_REGION'),
+          },
+        ],
+      }),
+      inject: [ConfigService],
+    }),
   ],
   controllers: [EmailController],
-  providers: [EmailService],
+  providers: [
+    EmailService,
+    {
+      provide: 'SQS_CLIENT',
+      useValue: sqsClient,
+    },
+  ],
 })
 export class EmailModule {}

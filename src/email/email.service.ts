@@ -5,6 +5,8 @@ import {
 } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
+import { SqsMessageHandler } from '@ssut/nestjs-sqs';
+import * as SQS from '@aws-sdk/client-sqs';
 
 import { SendWelcomeEmailDto } from './dto/send-welcome-email.dto';
 
@@ -23,13 +25,17 @@ export class EmailService {
     );
   }
 
-  async sendWelcomeEmail(
-    sendWelcomeEmailDto: SendWelcomeEmailDto
-  ): Promise<void> {
-    //TODO: integrate with SQS for the different use cases
-    const { email, subject, templatePath, context } =
-      this.prepareEmailDetails(sendWelcomeEmailDto);
-    await this.processSendEmail(email, subject, templatePath, context);
+  @SqsMessageHandler('paystreme-notifications', false)
+  async handleMessage(message: SQS.Message) {
+    try {
+      this.logger.log(`Message received ${message.Body}`);
+      const body = JSON.parse(message.Body);
+      const { email, subject, templatePath, context } =
+        this.prepareEmailDetails(body);
+      await this.processSendEmail(email, subject, templatePath, context);
+    } catch (error) {
+      this.logger.error(`Error handling message`, error);
+    }
   }
 
   async sendWelcomeEmailManually(
