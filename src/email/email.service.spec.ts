@@ -107,7 +107,6 @@ describe('EmailService', () => {
       subject: expectedEmailDetails.subject,
       templatePath: expectedEmailDetails.template,
       context: expectedEmailDetails.context,
-      attachments: expectedEmailDetails.attachments,
     });
   });
 });
