@@ -9,7 +9,6 @@ pipelines:
           steps:
             - step:
                 name: Build with Docker
-                deployment: Dev
                 script:
                   - pip3 install awscli
                   - TAG=${BITBUCKET_BRANCH}-${BITBUCKET_BUILD_NUMBER}
@@ -27,7 +26,6 @@ pipelines:
                   - docker
             - step:
                 name: Deploy to DEV
-                deployment: Dev
                 script:
                   - pipe: atlassian/aws-eks-kubectl-run:1.2.0
                     variables:
