@@ -1,0 +1,23 @@
+image: python:3.7.4-alpine3.10
+
+pipelines:
+  branches:
+    "development":
+      - step:
+          name: Build with Docker
+          deployment: Dev
+          script:
+            - pip3 install awscli
+            - TAG=${BITBUCKET_BRANCH}-${BITBUCKET_BUILD_NUMBER}
+            - TAG_LATEST=${BITBUCKET_BRANCH}-latest
+            - aws configure set aws_access_key_id "${AWS_KEY}"
+            - aws configure set aws_secret_access_key "${AWS_SECRET}"
+            - eval $(aws ecr get-login --no-include-email --region us-east-2 | sed 's;https://;;g')
+            - docker build --build-arg MAIL_HOST=$MAIL_HOST --build-arg MAIL_PORT=$MAIL_PORT --build-arg MAIL_FROM=$MAIL_FROM --build-arg MAIL_USER=$MAIL_USER --build-arg MAIL_PASS=$MAIL_PASS --build-arg PORTAL_URL=$PORTAL_URL -t ${IMAGE}:$TAG .
+            - docker build --build-arg MAIL_HOST=$MAIL_HOST --build-arg MAIL_PORT=$MAIL_PORT --build-arg MAIL_FROM=$MAIL_FROM --build-arg MAIL_USER=$MAIL_USER --build-arg MAIL_PASS=$MAIL_PASS --build-arg PORTAL_URL=$PORTAL_URL  -t ${IMAGE}:$TAG_LATEST .
+            - docker push ${IMAGE}:$TAG
+            - docker push ${IMAGE}:$TAG_LATEST
+          caches:
+            - pip
+          services:
+            - docker
