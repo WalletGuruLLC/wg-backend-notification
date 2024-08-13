@@ -17,14 +17,7 @@ $ npm install
 
 ### Set up the environment variables
 
-Create a .env file in the root of the project with the following content:
-
-    MAIL_HOST=
-    MAIL_PORT=
-    MAIL_FROM=
-    MAIL_USER=
-    MAIL_PASS=
-    PORTAL_URL=
+Create a .env file in the root of the project following the content of .env.example.
 
 ## Running the Application
 
