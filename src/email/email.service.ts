@@ -14,17 +14,11 @@ import { SendOtpEmailDto } from './dto/send-otp-email.dto';
 @Injectable()
 export class EmailService {
   private readonly logger = new Logger(EmailService.name);
-  private readonly PORTAL_URL: string;
 
   constructor(
     private readonly mailerService: MailerService,
     private readonly configService: ConfigService
-  ) {
-    this.PORTAL_URL = this.configService.get<string>(
-      'PORTAL_URL',
-      'https://www.mywalletguru.com/'
-    );
-  }
+  ) {}
 
   @SqsMessageHandler('paystreme-notifications', false)
   async handleMessage(message: SQS.Message) {
@@ -49,7 +43,7 @@ export class EmailService {
     const { username, email, otp } = sendOtpEmailDto;
     const subject = `Action required: Activate Your Account`;
     const templatePath = './login';
-    const context = { username, email, otp, portalUrl: this.PORTAL_URL };
+    const context = { username, email, otp };
 
     return { email, subject, templatePath, context };
   }
@@ -74,10 +68,9 @@ export class EmailService {
           },
         ],
       });
-      this.logger.log(`Email sent successfully to ${to}`);
     } catch (error) {
       this.logger.error(`Error sending email to ${to}`, error.stack);
-      throw new InternalServerErrorException('Failed to send email');
+      throw error;
     }
   }
 }

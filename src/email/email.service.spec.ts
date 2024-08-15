@@ -33,7 +33,6 @@ describe('EmailService', () => {
       username: 'testuser',
       email: 'test@example.com',
       otp: '123456',
-      portalUrl: 'https://www.mywalletguru.com/',
     },
     attachments: [
       {
@@ -89,10 +88,10 @@ describe('EmailService', () => {
     expect(sendMailSpy).toHaveBeenCalledWith(expectedEmailDetails);
   });
 
-  it('should throw an InternalServerErrorException if manual email sending fails', async () => {
+  it('should throw an InternalServerErrorException if otp email sending fails', async () => {
     jest
       .spyOn(mailerService, 'sendMail')
-      .mockRejectedValueOnce(new Error('Failed to send email'));
+      .mockRejectedValueOnce(new InternalServerErrorException());
 
     await expect(service.sendOtpEmail(sendOtpEmailDto)).rejects.toThrow(
       InternalServerErrorException
