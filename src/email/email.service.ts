@@ -9,7 +9,7 @@ import { SqsMessageHandler } from '@ssut/nestjs-sqs';
 import * as SQS from '@aws-sdk/client-sqs';
 import { resolve } from 'path';
 
-import { SendWelcomeEmailDto } from './dto/send-welcome-email.dto';
+import { SendOtpEmailDto } from './dto/send-otp-email.dto';
 
 @Injectable()
 export class EmailService {
@@ -39,16 +39,14 @@ export class EmailService {
     }
   }
 
-  async sendWelcomeEmailManually(
-    sendWelcomeEmailDto: SendWelcomeEmailDto
-  ): Promise<void> {
+  async sendOtpEmail(sendOtpEmailDto: SendOtpEmailDto): Promise<void> {
     const { email, subject, templatePath, context } =
-      this.prepareEmailDetails(sendWelcomeEmailDto);
+      this.prepareEmailDetails(sendOtpEmailDto);
     await this.processSendEmail(email, subject, templatePath, context);
   }
 
-  private prepareEmailDetails(sendWelcomeEmailDto: SendWelcomeEmailDto) {
-    const { username, email, otp } = sendWelcomeEmailDto;
+  private prepareEmailDetails(sendOtpEmailDto: SendOtpEmailDto) {
+    const { username, email, otp } = sendOtpEmailDto;
     const subject = `Action required: Activate Your Account`;
     const templatePath = './login';
     const context = { username, email, otp, portalUrl: this.PORTAL_URL };

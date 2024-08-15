@@ -4,7 +4,7 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
 import * as SQS from '@aws-sdk/client-sqs';
 
-import { SendWelcomeEmailDto } from './dto/send-welcome-email.dto';
+import { SendOtpEmailDto } from './dto/send-otp-email.dto';
 import { InternalServerErrorException } from '@nestjs/common';
 
 describe('EmailService', () => {
@@ -19,7 +19,7 @@ describe('EmailService', () => {
     sendMail: jest.fn(),
   };
 
-  const sendWelcomeEmailDto: SendWelcomeEmailDto = {
+  const sendOtpEmailDto: SendOtpEmailDto = {
     username: 'testuser',
     email: 'test@example.com',
     otp: '123456',
@@ -84,7 +84,7 @@ describe('EmailService', () => {
       .spyOn(mailerService, 'sendMail')
       .mockResolvedValueOnce(null);
 
-    await service.sendWelcomeEmailManually(sendWelcomeEmailDto);
+    await service.sendOtpEmail(sendOtpEmailDto);
 
     expect(sendMailSpy).toHaveBeenCalledWith(expectedEmailDetails);
   });
@@ -94,13 +94,13 @@ describe('EmailService', () => {
       .spyOn(mailerService, 'sendMail')
       .mockRejectedValueOnce(new Error('Failed to send email'));
 
-    await expect(
-      service.sendWelcomeEmailManually(sendWelcomeEmailDto)
-    ).rejects.toThrow(InternalServerErrorException);
+    await expect(service.sendOtpEmail(sendOtpEmailDto)).rejects.toThrow(
+      InternalServerErrorException
+    );
   });
 
   it('should prepare email details correctly', () => {
-    const emailDetails = service['prepareEmailDetails'](sendWelcomeEmailDto);
+    const emailDetails = service['prepareEmailDetails'](sendOtpEmailDto);
 
     expect(emailDetails).toEqual({
       email: expectedEmailDetails.to,

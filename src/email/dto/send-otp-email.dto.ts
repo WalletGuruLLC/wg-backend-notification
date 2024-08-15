@@ -1,4 +1,4 @@
-export class SendWelcomeEmailDto {
+export class SendOtpEmailDto {
   username: string;
   email: string;
   otp: string;
