@@ -19,7 +19,7 @@ export class EmailController {
       await this.emailService.sendOtpEmail(sendOtpEmailDto);
       return {
         statusCode: HttpStatus.OK,
-        customCode: 'WGE0022',
+        customCode: 'WGE0071',
         customMessage: successCodes.WGE0071?.description,
         customMessageEs: successCodes.WGE0071?.descriptionEs,
       };
