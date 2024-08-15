@@ -61,7 +61,7 @@ describe('EmailService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should handle the message and send an email successfully', async () => {
+  it('should handle the message from SQS and send an otp email successfully', async () => {
     const sendMailSpy = jest
       .spyOn(mailerService, 'sendMail')
       .mockResolvedValueOnce(null);
@@ -79,7 +79,7 @@ describe('EmailService', () => {
     expect(sendMailSpy).toHaveBeenCalledWith(expectedEmailDetails);
   });
 
-  it('should send a welcome email manually successfully', async () => {
+  it('should send a otp email successfully', async () => {
     const sendMailSpy = jest
       .spyOn(mailerService, 'sendMail')
       .mockResolvedValueOnce(null);
