@@ -16,8 +16,8 @@ pipelines:
                   - aws configure set aws_access_key_id "${AWS_KEY}"
                   - aws configure set aws_secret_access_key "${AWS_SECRET}"
                   - eval $(aws ecr get-login --no-include-email --region us-east-2 | sed 's;https://;;g')
-                  - docker build --build-arg NODE_ENV=$NODE_ENV --build-arg AWS_REGION=$AWS_REGION_P --build-arg AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID_P --build-arg AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY_P --build-arg SQS_QUEUE_URL=$SQS_QUEUE_URL --build-arg MAIL_HOST=$MAIL_HOST --build-arg MAIL_PORT="${MAIL_PORT}" --build-arg MAIL_FROM=$MAIL_FROM --build-arg MAIL_USER=$MAIL_USER --build-arg MAIL_PASS=$MAIL_PASS -t ${IMAGE}:$TAG .
-                  - docker build --build-arg NODE_ENV=$NODE_ENV --build-arg AWS_REGION=$AWS_REGION_P --build-arg AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID_P --build-arg AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY_P --build-arg SQS_QUEUE_URL=$SQS_QUEUE_URL --build-arg MAIL_HOST=$MAIL_HOST --build-arg MAIL_PORT="${MAIL_PORT}" --build-arg MAIL_FROM=$MAIL_FROM --build-arg MAIL_USER=$MAIL_USER --build-arg MAIL_PASS=$MAIL_PASS -t ${IMAGE}:$TAG_LATEST .
+                  - docker build --build-arg NODE_ENV=$NODE_ENV --build-arg AWS_REGION=$AWS_REGION_P --build-arg AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID_P --build-arg AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY_P --build-arg SQS_QUEUE_URL=$SQS_QUEUE_URL --build-arg MAIL_HOST=$MAIL_HOST --build-arg MAIL_PORT=$MAIL_PORT --build-arg MAIL_FROM=$MAIL_FROM --build-arg MAIL_USER=$MAIL_USER --build-arg MAIL_PASS=$MAIL_PASS -t ${IMAGE}:$TAG .
+                  - docker build --build-arg NODE_ENV=$NODE_ENV --build-arg AWS_REGION=$AWS_REGION_P --build-arg AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID_P --build-arg AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY_P --build-arg SQS_QUEUE_URL=$SQS_QUEUE_URL --build-arg MAIL_HOST=$MAIL_HOST --build-arg MAIL_PORT=$MAIL_PORT --build-arg MAIL_FROM=$MAIL_FROM --build-arg MAIL_USER=$MAIL_USER --build-arg MAIL_PASS=$MAIL_PASS -t ${IMAGE}:$TAG_LATEST .
                   - docker push ${IMAGE}:$TAG
                   - docker push ${IMAGE}:$TAG_LATEST
                 caches:
