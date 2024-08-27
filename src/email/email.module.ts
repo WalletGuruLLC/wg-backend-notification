@@ -5,7 +5,6 @@ import {EjsAdapter} from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
 import {join} from 'path';
 import {SqsModule} from '@ssut/nestjs-sqs';
 import {SQSClient} from '@aws-sdk/client-sqs';
-import {fromEnv} from '@aws-sdk/credential-provider-env';
 
 import {EmailService} from './email.service';
 import {EmailController} from './email.controller';
@@ -17,9 +16,6 @@ const sqsClient = new SQSClient({
         secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     },
 });
-
-console.log('sqsClient', sqsClient);
-console.log('sqsClient', sqsClient.config.credentials);
 
 @Module({
     imports: [
