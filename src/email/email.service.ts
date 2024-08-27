@@ -10,6 +10,7 @@ import * as SQS from '@aws-sdk/client-sqs';
 import { resolve } from 'path';
 
 import { SendOtpEmailDto } from './dto/send-otp-email.dto';
+import * as Sentry from '@sentry/nestjs';
 
 @Injectable()
 export class EmailService {
@@ -29,6 +30,7 @@ export class EmailService {
         this.prepareEmailDetails(body);
       await this.processSendEmail(email, subject, templatePath, context);
     } catch (error) {
+      Sentry.captureException(error);
       this.logger.error(`Error handling message`, error);
     }
   }
@@ -69,6 +71,7 @@ export class EmailService {
         ],
       });
     } catch (error) {
+      Sentry.captureException(error);
       this.logger.error(`Error sending email to ${to}`, error.stack);
       throw error;
     }

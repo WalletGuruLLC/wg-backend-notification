@@ -37,7 +37,7 @@ describe('EmailService', () => {
     attachments: [
       {
         filename: 'logo.png',
-        path: '/home/claudioloz7/wallet-guru/wg-backend-notification/src/email/assets/images/logo.png',
+        path: '/Users/cristiandulcey/Work/scrummers/wallet_guru/wg_backend_notification/src/email/assets/images/logo.png',
         cid: 'logo',
       },
     ],
