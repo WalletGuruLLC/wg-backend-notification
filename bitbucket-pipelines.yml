@@ -1,6 +1,21 @@
 image: python:3.7.4-alpine3.10
 
 pipelines:
+  pull-requests:
+    "**":
+      - parallel:
+          - step:
+              image: node:20
+              name: Lint
+              size: 2x
+              script:
+                - cp .env.example .env
+                - npm install
+                - npm run lint
+                - npm run prettier
+                - npm run format
+              caches:
+                - node
   branches:
     "development":
       - stage:
@@ -35,8 +50,8 @@ pipelines:
                       CLUSTER_NAME: ${CLUSTER_NAME}
                       KUBECTL_COMMAND: "set"
                       KUBECTL_ARGS:
-                      - "image"
-                      - "--namespace=dev"
-                      - "deployment/backend-notification"
-                      - "backend-notification=${IMAGE}:${BITBUCKET_BRANCH}-${BITBUCKET_BUILD_NUMBER}"
+                        - "image"
+                        - "--namespace=dev"
+                        - "deployment/backend-notification"
+                        - "backend-notification=${IMAGE}:${BITBUCKET_BRANCH}-${BITBUCKET_BUILD_NUMBER}"
                       DEBUG: "true"
