@@ -1,6 +1,6 @@
 import {NestFactory} from '@nestjs/core';
 import {AppModule} from './app.module';
-import * as Sentry from "@sentry/nestjs"
+import * as Sentry from '@sentry/nestjs'
 import {nodeProfilingIntegration} from "@sentry/profiling-node";
 
 async function bootstrap() {
