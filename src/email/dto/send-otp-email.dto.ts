@@ -1,5 +1,6 @@
-export class SendOtpEmailDto {
+export class SendEmailDto {
+  event: string;
   username: string;
   email: string;
-  otp: string;
+  value: string;
 }

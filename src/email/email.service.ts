@@ -1,15 +1,11 @@
-import {
-  Injectable,
-  Logger,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
 import { SqsMessageHandler } from '@ssut/nestjs-sqs';
 import * as SQS from '@aws-sdk/client-sqs';
 import { resolve } from 'path';
 
-import { SendOtpEmailDto } from './dto/send-otp-email.dto';
+import { SendEmailDto } from './dto/send-otp-email.dto';
 import * as Sentry from '@sentry/nestjs';
 
 @Injectable()
@@ -35,17 +31,37 @@ export class EmailService {
     }
   }
 
-  async sendOtpEmail(sendOtpEmailDto: SendOtpEmailDto): Promise<void> {
+  async sendOtpEmail(sendEmailDto: SendEmailDto): Promise<void> {
     const { email, subject, templatePath, context } =
-      this.prepareEmailDetails(sendOtpEmailDto);
+      this.prepareEmailDetails(sendEmailDto);
     await this.processSendEmail(email, subject, templatePath, context);
   }
 
-  private prepareEmailDetails(sendOtpEmailDto: SendOtpEmailDto) {
-    const { username, email, otp } = sendOtpEmailDto;
-    const subject = `Action required: Activate Your Account`;
-    const templatePath = './login';
-    const context = { username, email, otp };
+  private prepareEmailDetails(sendEmailDto: SendEmailDto) {
+    const { event, username, email, value } = sendEmailDto;
+
+    let subject;
+    let templatePath;
+    let url;
+    switch (event) {
+      case 'WALLET_USER_CREATED':
+        subject = `Please Verify Your Email Address`;
+        templatePath = './wallet-user-created';
+        break;
+      case 'FIRST_PASSWORD_GENERATED':
+        subject = `Welcome to Wallet Guru, ${username}`;
+        templatePath = './first-password-generated';
+        url = `${this.configService.get('FRONTEND_ACTIVE_ACCOUNT_URL', 'https://dev.admin.walletguru.co/')}`;
+        break;
+      case 'LOGGED_IN':
+        subject = `Your One-Time Password (OTP) for Secure Access`;
+        templatePath = './logged-in';
+        break;
+      default:
+        break;
+    }
+
+    const context = { username, email, value, url };
 
     return { email, subject, templatePath, context };
   }
