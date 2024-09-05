@@ -65,7 +65,7 @@ pipelines:
                         - "image"
                         - "--namespace=dev"
                         - "deployment/backend-notification"
-                        - "backend-notification=${IMAGE}:${BITBUCKET_BRANCH}-${BITBUCKET_BUILD_NUMBER}"
+                        - "backend-notification=${IMAGE_URL}:${BITBUCKET_BRANCH}-${BITBUCKET_BUILD_NUMBER}"
                       DEBUG: "true"
     "qa":
       - stage:
@@ -87,5 +87,5 @@ pipelines:
                         - "image"
                         - "--namespace=qa"
                         - "deployment/backend-notification"
-                        - "backend-notification=${IMAGE}:${BITBUCKET_BRANCH}-${BITBUCKET_BUILD_NUMBER}"
+                        - "backend-notification=${IMAGE_URL}:${BITBUCKET_BRANCH}-${BITBUCKET_BUILD_NUMBER}"
                       DEBUG: "true"
