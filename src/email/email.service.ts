@@ -39,6 +39,7 @@ export class EmailService {
 
   private prepareEmailDetails(sendEmailDto: SendEmailDto) {
     const { event, username, email, value } = sendEmailDto;
+    console.log('sendEmailDto', sendEmailDto);
 
     let subject;
     let templatePath;
@@ -56,6 +57,10 @@ export class EmailService {
       case 'LOGGED_IN':
         subject = `Your One-Time Password (OTP) for Secure Access`;
         templatePath = './logged-in';
+        break;
+      case 'SEND_MONEY_CONFIRMATION':
+        subject = `Confirmation of Your Transfer from Wallet Guru`;
+        templatePath = './send-money-confirmation';
         break;
       default:
         break;
