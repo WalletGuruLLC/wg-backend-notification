@@ -57,6 +57,14 @@ export class EmailService {
         subject = `Your One-Time Password (OTP) for Secure Access`;
         templatePath = './logged-in';
         break;
+      case 'SEND_MONEY_CONFIRMATION':
+        subject = `Confirmation of Your Transfer from Wallet Guru`;
+        templatePath = './send-money-confirmation';
+        break;
+      case 'RECEIVE_MONEY_CONFIRMATION':
+        subject = `Incoming Transfer to your Wallet Guru Account`;
+        templatePath = './receive-money-confirmation';
+        break;
       default:
         break;
     }

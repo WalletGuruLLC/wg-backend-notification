@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Please Verify Your Email Address</title>
+  <style>
+      body {
+          font-family: Arial, sans-serif;
+          background-color: #f4f4f4;
+          margin: 0;
+          padding: 0;
+      }
+      .email-container {
+          margin: 0 auto;
+          background-color: #ffffff;
+          padding: 20px;
+      }
+      .header {
+          display: flex;
+          justify-content: center; /* Center content horizontally */
+          align-items: center; /* Center content vertically */
+          padding-bottom: 20px;
+      }
+      .header img {
+        width: 50px;
+        height: 50px;
+        margin-right: 10px;
+      }
+      .content {
+          padding: 20px;
+          text-align: left;
+      }
+      .content h1 {
+          color: #000000;
+      }
+      .content p {
+          color: #333333;
+          font-size: 16px;
+          line-height: 1.5;
+      }
+      .activation-code {
+          font-size: 24px;
+          font-weight: bold;
+          color: #000000;
+          margin: 20px 0;
+      }
+      .footer {
+          text-align: left;
+          color: #999999;
+          font-size: 12px;
+          padding-top: 20px;
+          padding-left: 20px;
+      }
+  </style>
+</head>
+<body>
+<% const { username, value } = locals; %>
+  <div class="email-container">
+    <div class="header">
+      <img src="cid:logo" alt="Wallet Guru Logo">
+      <h2>Wallet guru</h2>
+    </div>
+    <div class="content">
+      <h1 style="font-size: 36px">Hello <%= username %>,</h1>
+      <p style="font-size: 18px">We are pleased to inform you that you have received a new transfer to your Wallet Guru account.</p>
+      <p style="font-size: 18px"><span class="activation-code">Transaction Details:</span><br>
+          • Amount Received: <%= value.value %> <%= value.asset %><br>
+          • Wallet Address: <%= value.walletAddress %><br>
+          • Date: <%= value.date %></p>
+      <p style="font-size: 18px">Thank you choosing Wallet Guru for your financial needs. If you have any questions or need further assistance, please do not hesitate to contact our support team.</p>
+    </div>
+    <div class="footer">
+      <p>If you don't recognize this activity please contact our support team.<br>
+         Thank you for choosing Wallet Guru!<br>
+         Best regards, <br> Wallet Guru Support Team</p>
+    </div>
+  </div>
+</body>
+</html>
