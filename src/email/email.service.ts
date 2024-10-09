@@ -39,7 +39,6 @@ export class EmailService {
 
   private prepareEmailDetails(sendEmailDto: SendEmailDto) {
     const { event, username, email, value } = sendEmailDto;
-    console.log('sendEmailDto', sendEmailDto);
 
     let subject;
     let templatePath;
@@ -61,6 +60,10 @@ export class EmailService {
       case 'SEND_MONEY_CONFIRMATION':
         subject = `Confirmation of Your Transfer from Wallet Guru`;
         templatePath = './send-money-confirmation';
+        break;
+      case 'RECEIVE_MONEY_CONFIRMATION':
+        subject = `Incoming Transfer to your Wallet Guru Account`;
+        templatePath = './receive-money-confirmation';
         break;
       default:
         break;
