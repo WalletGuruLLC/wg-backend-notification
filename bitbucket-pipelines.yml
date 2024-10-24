@@ -27,10 +27,9 @@ options:
   docker: true
   size: 2x
 
-
 pipelines:
   pull-requests:
-    "**":
+    '**':
       - parallel:
           - step:
               image: node:20
@@ -45,7 +44,7 @@ pipelines:
               caches:
                 - node
   branches:
-    "development":
+    'development':
       - stage:
           name: Build with Docker
           deployment: Dev
@@ -58,16 +57,16 @@ pipelines:
                     variables:
                       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID_TERRAFORM}
                       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY_TERRAFORM}
-                      AWS_DEFAULT_REGION: "us-east-2"
+                      AWS_DEFAULT_REGION: 'us-east-2'
                       CLUSTER_NAME: ${CLUSTER_NAME}
-                      KUBECTL_COMMAND: "set"
+                      KUBECTL_COMMAND: 'set'
                       KUBECTL_ARGS:
-                        - "image"
-                        - "--namespace=dev"
-                        - "deployment/backend-notification"
-                        - "backend-notification=${IMAGE_URL}:${BITBUCKET_BRANCH}-${BITBUCKET_BUILD_NUMBER}"
-                      DEBUG: "true"
-    "qa":
+                        - 'image'
+                        - '--namespace=dev'
+                        - 'deployment/backend-notification'
+                        - 'backend-notification=${IMAGE_URL}:${BITBUCKET_BRANCH}-${BITBUCKET_BUILD_NUMBER}'
+                      DEBUG: 'true'
+    'qa':
       - stage:
           name: Build with Docker
           deployment: QA
@@ -80,17 +79,17 @@ pipelines:
                     variables:
                       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID_TERRAFORM}
                       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY_TERRAFORM}
-                      AWS_DEFAULT_REGION: "us-east-2"
+                      AWS_DEFAULT_REGION: 'us-east-2'
                       CLUSTER_NAME: ${CLUSTER_NAME}
-                      KUBECTL_COMMAND: "set"
+                      KUBECTL_COMMAND: 'set'
                       KUBECTL_ARGS:
-                        - "image"
-                        - "--namespace=qa"
-                        - "deployment/backend-notification"
-                        - "backend-notification=${IMAGE_URL}:${BITBUCKET_BRANCH}-${BITBUCKET_BUILD_NUMBER}"
-                      DEBUG: "true"
+                        - 'image'
+                        - '--namespace=qa'
+                        - 'deployment/backend-notification'
+                        - 'backend-notification=${IMAGE_URL}:${BITBUCKET_BRANCH}-${BITBUCKET_BUILD_NUMBER}'
+                      DEBUG: 'true'
 
-    "stg":
+    'stg':
       - stage:
           name: Build with Docker
           deployment: Stg
@@ -103,12 +102,12 @@ pipelines:
                     variables:
                       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID_TERRAFORM}
                       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY_TERRAFORM}
-                      AWS_DEFAULT_REGION: "us-east-2"
+                      AWS_DEFAULT_REGION: 'us-east-2'
                       CLUSTER_NAME: ${CLUSTER_NAME}
-                      KUBECTL_COMMAND: "set"
+                      KUBECTL_COMMAND: 'set'
                       KUBECTL_ARGS:
-                        - "image"
-                        - "--namespace=stg"
-                        - "deployment/backend-notification"
-                        - "backend-notification=${IMAGE_URL}:${BITBUCKET_BRANCH}-${BITBUCKET_BUILD_NUMBER}"
-                      DEBUG: "true"
+                        - 'image'
+                        - '--namespace=stg'
+                        - 'deployment/backend-notification'
+                        - 'backend-notification=${IMAGE_URL}:${BITBUCKET_BRANCH}-${BITBUCKET_BUILD_NUMBER}'
+                      DEBUG: 'true'
