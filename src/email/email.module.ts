@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
 import { join } from 'path';
@@ -20,19 +20,19 @@ const sqsClient = new SQSClient({
   imports: [
     ConfigModule,
     MailerModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
+      imports: [],
+      useFactory: async () => ({
         transport: {
-          host: configService.get<string>('MAIL_HOST'),
-          port: configService.get<number>('MAIL_PORT'),
+          host: process.env.MAIL_HOST,
+          port: process.env.MAIL_PORT,
           secure: false,
           auth: {
-            user: configService.get<string>('MAIL_USER'),
-            pass: configService.get<string>('MAIL_PASS'),
+            user: process.env.MAIL_USER,
+            pass: process.env.MAIL_PASS,
           },
         },
         defaults: {
-          from: configService.get<string>('MAIL_FROM'),
+          from: process.env.MAIL_FROM,
         },
         template: {
           dir: join(__dirname, './assets/templates'),
@@ -42,20 +42,20 @@ const sqsClient = new SQSClient({
           },
         },
       }),
-      inject: [ConfigService],
+      inject: [],
     }),
     SqsModule.registerAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
+      imports: [],
+      useFactory: async () => ({
         consumers: [
           {
             name: 'paystreme-notifications',
-            queueUrl: configService.get<string>('SQS_QUEUE_URL'),
-            region: configService.get<string>('AWS_REGION'),
+            queueUrl: process.env.SQS_QUEUE_URL,
+            region: process.env.AWS_REGION,
           },
         ],
       }),
-      inject: [ConfigService],
+      inject: [],
     }),
   ],
   controllers: [],
