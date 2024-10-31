@@ -65,6 +65,10 @@ export class EmailService {
         subject = `Incoming Transfer to your Wallet Guru Account`;
         templatePath = './receive-money-confirmation';
         break;
+      case 'RESET_PASSWORD':
+        subject = `Your request for a new-password`;
+        templatePath = './reset-password';
+        break;
       default:
         break;
     }
