@@ -7,6 +7,7 @@ This microservice is responsible for sending notifications to users using Node.j
 - Node.js (v20 or higher)
 - NestJS (v10 or higher)
 - AWS SES (or another SMTP server) and email verified from the STMP server
+- [Create resources of aws](https://github.com/ErgonStreamGH/wg-infra) `Wg infra`
 
 ## Installation
 
