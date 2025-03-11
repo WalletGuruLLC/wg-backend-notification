@@ -1,6 +1,8 @@
 # Notification Microservice
 
-This microservice is responsible for sending notifications to users using Node.js and NestJS as the development framework and AWS SES for sending emails. It provides functionalities such as sending welcome emails and other user notifications.
+This microservice is responsible for sending notifications to users using Node.js and NestJS as the development
+framework and AWS SES for sending emails. It provides functionalities such as sending welcome emails and other user
+notifications.
 
 ## Dependencies
 
@@ -13,8 +15,7 @@ This microservice uses the following key dependencies:
 - [AWS SDK](https://aws.amazon.com/sdk-for-node-js/) - AWS integration
 - [AWS SES](https://docs.aws.amazon.com/ses/) (or another SMTP server) and email verified from the STMP server
 - [bcrypt](https://www.npmjs.com/package/bcrypt) - Secure password hashing
-
-
+- [Wg-infra](https://github.com/ErgonStreamGH/wg-infra) - Deploy services with Terraform
 
 ---
 
@@ -35,30 +36,38 @@ npm install
 
 ### 3. Create envs in AWS Secrets Manager
 
-Create a secret in AWS Secrets Manager with the name `walletguru-auth-local` and the following key-value pairs:
+Create a secret in AWS Secrets Manager with the name `walletguru-notification-local` and the following key-value pairs:
 
 ```
 {
-   "AWS_ACCESS_KEY_ID":"", # AWS Access Key ID for access to DynamoDB and Cognito
-   "AWS_SECRET_ACCESS_KEY":"", # AWS Secret Access Key for access to DynamoDB and Cognito
-   "COGNITO_USER_POOL_ID":"", # Cognito User Pool ID
-   "COGNITO_CLIENT_ID":"", # Cognito Client ID
-   "AWS_REGION":"", # AWS Region
-   "SQS_QUEUE_URL":"", # SQS Queue URL for sending email notifications
-   "COGNITO_CLIENT_SECRET_ID":"", # Cognito Client Secret ID
-   "SENTRY_DSN":"", # Sentry DSN for error tracking
-   "AWS_S3_BUCKET_NAME":"", # AWS S3 Bucket Name
-   "WALLET_URL":"", # Wallet URL for public access
-   "APP_SECRET":"", # App Secret for JWT token
-   "NODE_ENV":"development", # Node Environment
-   "SUMSUB_APP_TOKEN":"", # Sumsub App Token
-   "SUMSUB_SECRET_TOKEN":"", # Sumsub Secret Token
-   "URL_UPTIME":"", # URL for uptime monitoring
-   "UPTIME_PASSWORD":"", # Password for uptime monitoring
-   "UPTIME_USERNAME":"", # Username for uptime monitoring
-   "SUMSUB_DIGEST_SECRET_TOKEN":"" # Sumsub Digest Secret Token
+   "AWS_REGION":"",
+   "AWS_ACCESS_KEY_ID":"",
+   "AWS_SECRET_ACCESS_KEY":"",
+   "SQS_QUEUE_URL":"",
+   "MAIL_HOST":"",
+   "MAIL_PORT":"",
+   "MAIL_FROM":"",
+   "MAIL_USER":"",
+   "MAIL_PASS":"",
+   "SENTRY_DSN":"",
+   "NODE_ENV":"",
+   "FRONTEND_ACTIVE_ACCOUNT_URL":""
 }
 ```
+
+| **Name Env**                | **Description**                                      | **REQUIRED** |
+|-----------------------------|------------------------------------------------------|--------------|
+| AWS_ACCESS_KEY_ID           | AWS Access Key for access to resources and service   | Yes          |
+| AWS_SECRET_ACCESS_KEY       | AWS Secret Key for access to resources and service   | Yes          |
+| AWS_REGION                  | AWS Region for access to resources and service       | Yes          |
+| MAIL_HOST                   | Host server smtp for send emails                     | Yes          |
+| MAIL_PORT                   | Port server smtp for send emails                     | Yes          |
+| MAIL_FROM                   | Email address for send emails                        | Yes          |
+| MAIL_USER                   | Username for server smtp for send emails             | Yes          |
+| MAIL_PASS                   | Password for server smtp for send emails             | Yes          |
+| SENTRY_DSN                  | If you use Sentry you can put the dsn for logs       | No           |
+| NODE_ENV                    | Env for node js                                      | Yes          |
+| FRONTEND_ACTIVE_ACCOUNT_URL | Url frontend for local host is http://localhost:3000 | Yes          |
 
 ### 4. Set Up Environment Variables
 
@@ -67,88 +76,16 @@ Create a `.env` file in the root directory and add:
 ```ini
 AWS_ACCESS_KEY_ID=""
 AWS_SECRET_ACCESS_KEY=""
-SECRET_NAME="walletguru-auth-local"
+SECRET_NAME="walletguru-notification-local"
 ```
 
-## Deployment to AWS ECR
-
-### 1. Create an AWS ECR Repository
-
-#### Option 1: Manually via AWS Console
-
-1. **Go to the AWS ECR Console**
-    - Open the [AWS ECR Console](https://console.aws.amazon.com/ecr/home).
-2. **Create a New Repository**
-    - Click **"Create repository"**.
-    - Set the **Repository name** to `backend-notification`.
-    - Choose **Private** or **Public** based on your needs.
-    - (Optional) Enable **Scan on Push** for security checks.
-    - Click **"Create repository"**.
-3. For more details, see
-   the [AWS ECR Repository Creation Guide](https://docs.aws.amazon.com/en_us/AmazonECR/latest/userguide/repository-create.html).
-
-#### Option 2: Using AWS CLI (Automated)
-
-##### **Step 1: Sign in to AWS CLI**
-
-Ensure you are authenticated with AWS before creating the repository:
-
-```sh
-aws configure
-```
-
-This command will prompt you to enter your AWS credentials (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and default
-region).
-
-##### **Step 2: Create the Repository**
-
-```sh
-aws ecr create-repository --repository-name backend-notification
-```
-
-### 2. Add Repository Details to `wg-infra/local.tfvars`
-
-After creating the repository, update the Terraform variables in `wg-infra/local.tfvars`:
-
-- **Add the repository name to `repos_list`:**
-  ```hcl
-  repos_list = [
-    "backend-notification",  # Add this line
-    # Other repositories...
-  ]
-  ```
-
-- **Add the repository URI to `microservices_list`:**
-  ```hcl
-  microservices_list = {
-    "backend-notification" = "<AWS_ACCOUNT_ID>.dkr.ecr.us-east-2.amazonaws.com/backend-notification"
-    # Other microservices...
-  }
-  ```
-
-### 3. Build the Docker Image
+### 5. Run the Application
 
 Using **Docker Compose**:
 
 ```sh
-docker-compose build
+docker-compose up
 ```
-
-### 4. Authenticate Docker with AWS ECR
-
-```sh
-aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin <AWS_ACCOUNT_ID>.dkr.ecr.us-east-2.amazonaws.com
-```
-
-### 5. Tag and Push Image to ECR
-
-```sh
-docker tag wg-backend-notification-server:latest <AWS_ACCOUNT_ID>.dkr.ecr.us-east-2.amazonaws.com/backend-notification:latest
-
-docker push <AWS_ACCOUNT_ID>.dkr.ecr.us-east-2.amazonaws.com/backend-notification:latest
-```
-
----
 
 ## Infrastructure Setup with `wg-infra`
 
@@ -165,16 +102,18 @@ running `wg-infra`. Otherwise, the infrastructure setup may fail due to missing 
 Make sure you follow similar steps when setting up, deploying, and managing the following microservices hosted in the
 respective repositories:
 
-| **Microservice**                              | **Repository URL**                                              |
-|-----------------------------------------------|-----------------------------------------------------------------|
-| Authentication Service (`backend-auth`)       | [GitHub Repo](https://github.com/WalletGuruLLC/backend-auth)    |
-| Notification Service (`backend-notification`) | [GitHub Repo](https://github.com/your-org/backend-notification) |
-| Admin Frontend (`frontend-admin`)             | [GitHub Repo](https://github.com/WalletGuruLLC/frontend-admin)  |
-| Wallet Service (`backend-wallet`)             | [GitHub Repo](https://github.com/WalletGuruLLC/backend-wallet)  |
+| **Microservice**                                | **Repository URL**                                               |
+|-------------------------------------------------|------------------------------------------------------------------|
+| Authentication Service (`backend-auth`)         | [GitHub Repo](https://github.com/WalletGuruLLC/backend-auth)     |
+| Notification Service (`backend-notification`)   | [GitHub Repo](https://github.com/your-org/backend-notification)  |
+| Admin Frontend (`frontend-admin`)               | [GitHub Repo](https://github.com/WalletGuruLLC/frontend-admin)   |
+| Wallet Service (`backend-wallet`)               | [GitHub Repo](https://github.com/WalletGuruLLC/backend-wallet)   |
+| Countries Now Service (`backend-countries-now`) | [GitHub Repo](https://github.com/ErgonStreamGH/wg-countries-now) |
+| Codes Service (`backend-codes`)                 | [GitHub Repo](https://github.com/ErgonStreamGH/wg-backend-codes) |
 
 Each microservice should:
 
-1️⃣ Have its **Docker image pushed to AWS ECR**  
-2️⃣ Be referenced in **`wg-infra/local.tfvars`** for Terraform  
-3️⃣ Store environment variables securely in **AWS Secrets Manager**
+1️⃣ Deploy the dependencies using Terraform in the **wg-infra** repository
+2️⃣ Store environment variables securely in **AWS Secrets Manager**
+3️⃣ Use **Docker Compose** for local development
 
